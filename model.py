@@ -5,7 +5,7 @@ from torch.nn import functional as F
 from layers import ConvNorm, LinearNorm
 from utils import to_gpu, get_mask_from_lengths
 from fp16_optimizer import fp32_to_fp16, fp16_to_fp32
-
+import sys
 
 class LocationLayer(nn.Module):
     def __init__(self, attention_n_filters, attention_kernel_size,
@@ -473,7 +473,7 @@ class Tacotron2(nn.Module):
         mel_padded = to_gpu(mel_padded).float()
         gate_padded = to_gpu(gate_padded).float()
         output_lengths = to_gpu(output_lengths).long()
-
+        
         return (
             (text_padded, input_lengths, mel_padded, max_len, output_lengths),
             (mel_padded, gate_padded))
@@ -500,14 +500,17 @@ class Tacotron2(nn.Module):
         inputs, input_lengths, targets, max_len, \
             output_lengths = self.parse_input(inputs)
         input_lengths, output_lengths = input_lengths.data, output_lengths.data
-
+        print("GDSNGJDSGJBSDGBS")
+        print("\n\n",inputs, "\n\n")
+        sys.stdout.flush()
         embedded_inputs = self.embedding(inputs).transpose(1, 2)
-
+        print("SSFSBDFSHRJREHFBXFFBF")
+        sys.stdout.flush()
         encoder_outputs = self.encoder(embedded_inputs, input_lengths)
 
         mel_outputs, gate_outputs, alignments = self.decoder(
             encoder_outputs, targets, memory_lengths=input_lengths)
-
+        
         mel_outputs_postnet = self.postnet(mel_outputs)
         mel_outputs_postnet = mel_outputs + mel_outputs_postnet
 

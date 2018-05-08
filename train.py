@@ -206,7 +206,11 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
                 param_group['lr'] = learning_rate
 
             model.zero_grad()
+            print("BATCH",batch, "-------------")
+            sys.stdout.flush()
             x, y = batch_parser(batch)
+            print("XXXXXXXXXXXX",x,"OOOOOOOOOOOOO")
+            sys.stdout.flush()
             y_pred = model(x)
             loss = criterion(y_pred, y)
             reduced_loss = reduce_tensor(loss.data, n_gpus)[0] \
