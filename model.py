@@ -183,13 +183,10 @@ class Encoder(nn.Module):
         input_lengths = input_lengths.cpu().numpy()
         x = nn.utils.rnn.pack_padded_sequence(
             x, input_lengths, batch_first=True)
-
-        self.lstm.flatten_parameters()
+        #self.lstm.flatten_parameters()
         outputs, _ = self.lstm(x)
-
         outputs, _ = nn.utils.rnn.pad_packed_sequence(
             outputs, batch_first=True)
-
         return outputs
 
     def inference(self, x):
@@ -302,7 +299,7 @@ class Decoder(nn.Module):
         """
         # (B, n_mel_channels, T_out) -> (B, T_out, n_mel_channels)
         decoder_inputs = decoder_inputs.transpose(1, 2)
-        decoder_inputs = decoder_inputs.view(
+        decoder_inputs = decoder_inputs.contiguous().view(
             decoder_inputs.size(0),
             int(decoder_inputs.size(1)/self.n_frames_per_step), -1)
         # (B, T_out, n_mel_channels) -> (T_out, B, n_mel_channels)
@@ -468,7 +465,7 @@ class Tacotron2(nn.Module):
         text_padded, input_lengths, mel_padded, gate_padded, \
             output_lengths = batch
         text_padded = to_gpu(text_padded).long()
-        max_len = int(torch.max(input_lengths.data).numpy())
+        max_len = int(torch.max(input_lengths))
         input_lengths = to_gpu(input_lengths).long()
         mel_padded = to_gpu(mel_padded).float()
         gate_padded = to_gpu(gate_padded).float()
@@ -500,17 +497,10 @@ class Tacotron2(nn.Module):
         inputs, input_lengths, targets, max_len, \
             output_lengths = self.parse_input(inputs)
         input_lengths, output_lengths = input_lengths.data, output_lengths.data
-        print("GDSNGJDSGJBSDGBS")
-        print("\n\n",inputs, "\n\n")
-        sys.stdout.flush()
         embedded_inputs = self.embedding(inputs).transpose(1, 2)
-        print("SSFSBDFSHRJREHFBXFFBF")
-        sys.stdout.flush()
         encoder_outputs = self.encoder(embedded_inputs, input_lengths)
-
         mel_outputs, gate_outputs, alignments = self.decoder(
             encoder_outputs, targets, memory_lengths=input_lengths)
-        
         mel_outputs_postnet = self.postnet(mel_outputs)
         mel_outputs_postnet = mel_outputs + mel_outputs_postnet
 
