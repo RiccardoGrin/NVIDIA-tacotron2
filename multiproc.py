@@ -2,6 +2,7 @@ import time
 import torch
 import sys
 import subprocess
+import os
 
 argslist = list(sys.argv)[1:]
 num_gpus = torch.cuda.device_count()
@@ -9,6 +10,9 @@ argslist.append('--n_gpus={}'.format(num_gpus))
 workers = []
 job_id = time.strftime("%Y_%m_%d-%H%M%S")
 argslist.append("--group_name=group_{}".format(job_id))
+
+if not os.path.isdir('logs'):
+    os.system('mkdir logs')
 
 for i in range(num_gpus):
     argslist.append('--rank={}'.format(i))
