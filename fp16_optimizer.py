@@ -167,7 +167,7 @@ class FP16_Optimizer(object):
         if not self.overflow:
             fp32_params = []
             for param_group in self.optimizer.param_groups:
-      _          for param in param_group['params']:
+                for param in param_group['params']:
                     fp32_params.append(param)
             if clip > 0:
                 return torch.nn.utils.clip_grad_norm(fp32_params, clip)
