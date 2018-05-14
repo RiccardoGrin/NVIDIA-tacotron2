@@ -1,4 +1,6 @@
 import torch
+import sys
+
 
 class LossScaler:
 
@@ -51,7 +53,7 @@ class DynamicLossScaler:
 
     # `x` is a torch.Tensor
     def _has_inf_or_nan(x):
-        inf_count = torch.sum(x.abs() == float('inf'))
+        inf_count = torch.sum(x.abs().float() == float('inf'))
         if inf_count > 0:
             return True
         nan_count = torch.sum(x != x)
@@ -129,4 +131,5 @@ if __name__ == "__main__":
 
         # Update loss scale for next iteration
         loss_scaler.update_scale(has_overflow)
+
 

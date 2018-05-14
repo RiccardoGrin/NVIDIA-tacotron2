@@ -1,6 +1,8 @@
 import torch
 import torch.distributed as dist
 from torch.nn.modules import Module
+import sys
+from torch.autograd import Variable
 
 def _flatten_dense_tensors(tensors):
     """Flatten dense tensors into a contiguous 1D buffer. Assume tensors are of
@@ -15,7 +17,7 @@ def _flatten_dense_tensors(tensors):
     """
     if len(tensors) == 1:
         return tensors[0].contiguous().view(-1)
-    flat = torch.cat([t.contiguous().view(-1) for t in tensors], dim=0)
+    flat = torch.cat([t.contiguous().view(-1).float() for t in tensors], dim=0)
     return flat
 
 def _unflatten_dense_tensors(flat, tensors):
@@ -90,9 +92,10 @@ class DistributedDataParallel(Module):
                     for buf, synced in zip(grads, _unflatten_dense_tensors(coalesced, grads)):
                         buf.copy_(synced)
 
+        #print("LIST", list(self.module.parameters()))    
         for param in list(self.module.parameters()):
             def allreduce_hook(*unused):
-                param._execution_engine.queue_callback(allreduce_params)
+                Variable._execution_engine.queue_callback(allreduce_params)
             if param.requires_grad:
                 param.register_hook(allreduce_hook)
 

@@ -77,7 +77,7 @@ class Attention(nn.Module):
             attention_hidden_state, processed_memory, attention_weights_cat)
 
         if mask is not None:
-            alignment.data.masked_fill_(mask, self.score_mask_value)
+            alignment.float().masked_fill_(mask, self.score_mask_value)
 
         attention_weights = F.softmax(alignment, dim=1)
         attention_context = torch.bmm(attention_weights.unsqueeze(1), memory)

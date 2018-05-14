@@ -42,8 +42,7 @@ def init_distributed(hparams, n_gpus, rank, group_name):
 
     # Initialize distributed communication
     torch.distributed.init_process_group(
-        backend=hparams.dist_backend, init_method=hparams.dist_url,
-        world_size=n_gpus, rank=rank, group_name=group_name)
+        backend=hparams.dist_backend, rank=rank, world_size=n_gpus, init_method=hparams.dist_url, group_name=group_name)
 
     print("Done initializing distributed")
 
@@ -172,7 +171,7 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
     if hparams.fp16_run:
         optimizer = FP16_Optimizer(
             optimizer, dynamic_loss_scale=hparams.dynamic_loss_scaling)
-
+        
     criterion = Tacotron2Loss()
 
     logger = prepare_directories_and_logger(
@@ -207,10 +206,10 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
             model.zero_grad()
             x, y = batch_parser(batch)
             y_pred = model(x)
-
             loss = criterion(y_pred, y)
-            reduced_loss = reduce_tensor(loss.data, n_gpus)[0] \
-                if hparams.distributed_run else loss.item()
+            
+            reduced_loss = reduce_tensor(loss, n_gpus) \
+                if hparams.distributed_run else loss
 
             if hparams.fp16_run:
                 optimizer.backward(loss)
