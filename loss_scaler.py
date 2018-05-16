@@ -130,9 +130,5 @@ if __name__ == "__main__":
             print('OVERFLOW!')
 
         # Update loss scale for next iteration
-        loss_scaler.update_scale(has_overflow)LOW!')
-
-        # Update loss scale for next iteration
         loss_scaler.update_scale(has_overflow)
->>>>>>> upstream/master
 

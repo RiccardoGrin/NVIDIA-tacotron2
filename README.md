@@ -33,13 +33,20 @@ Results from Tensorboard while Training:
 ## Multi-GPU (distributed) and FP16 Training
 1. `python -m multiproc train.py --output_directory=outdir --log_directory=logdir --hparams=distributed_run=True,fp16_run=True`
 
+This does train much faster and better than the normal training, however this may start by overflowing for a few steps, 
+with messages similar to the following, before it starts training correctly:
+
+'OVERFLOW! Skipping step. Attempted loss scale: 4294967296'
+
 ## Inference
 1. Start and open a Jupyter Notebook
 2. Open inference.ipynb
 3. Follow instructions on notebook and run
 
 Results from inference after 10k steps:
+
 Input text: "You stay in Wonderland and I show you how deep the rabbit hole goes." - Morpheus, The Matrix
+
 ![Predicted Mel Spectrogram, Alignment](inference_test.png)
 
 You can download 'inference_test.wav' and listen to the audio.

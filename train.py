@@ -235,7 +235,7 @@ def train(output_directory, log_directory, checkpoint_path, warm_start, n_gpus,
                 logger.log_training(
                     reduced_loss, grad_norm, learning_rate, duration, iteration)
 
-            if not overflow and (iteration % hparams.iters_per_checkpoint == 0):
+            if not overflow and (iteration % hparams.iters_per_checkpoint == 0) and (iteration != 0):
                 reduced_val_loss = validate(
                     model, criterion, valset, iteration, hparams.batch_size,
                     n_gpus, collate_fn, logger, hparams.distributed_run, rank)
