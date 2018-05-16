@@ -10,13 +10,13 @@ def create_hparams(hparams_string=None, verbose=False):
         # Experiment Parameters        #
         ################################
         epochs=500,
-        iters_per_checkpoint=500,
+        iters_per_checkpoint=250,
         seed=1234,
         dynamic_loss_scaling=True,
         fp16_run=False,
         distributed_run=False,
         dist_backend="nccl",
-        dist_url="file:///home/ubuntu/NVIDIA-tacotron2/test.dpt",#"file://distributed.dpt",
+        dist_url="file:///home/ubuntu/NVIDIA-tacotron2/test.dpt",
         cudnn_enabled=True,
         cudnn_benchmark=False,
 
