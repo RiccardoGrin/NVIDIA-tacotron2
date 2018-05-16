@@ -3,6 +3,8 @@ import time
 import argparse
 import math
 import sys
+from numpy import finfo
+
 import torch
 from distributed import DistributedDataParallel
 from torch.utils.data.distributed import DistributedSampler
@@ -76,7 +78,9 @@ def prepare_directories_and_logger(output_directory, log_directory, rank):
 
 def load_model(hparams):
     model = Tacotron2(hparams).cuda()
-    model = batchnorm_to_float(model.half()) if hparams.fp16_run else model
+    if hparams.fp16_run:
+        model = batchnorm_to_float(model.half())
+        model.decoder.attention_layer.score_mask_value = float(finfo('float16').min)
 
     if hparams.distributed_run:
         model = DistributedDataParallel(model)
@@ -278,7 +282,7 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = hparams.cudnn_benchmark
 
     print("FP16 Run:", hparams.fp16_run)
-    print("Dynamic Loss Scaling", hparams.dynamic_loss_scaling)
+    print("Dynamic Loss Scaling:", hparams.dynamic_loss_scaling)
     print("Distributed Run:", hparams.distributed_run)
     print("cuDNN Enabled:", hparams.cudnn_enabled)
     print("cuDNN Benchmark:", hparams.cudnn_benchmark)
