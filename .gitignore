@@ -4,3 +4,4 @@ logs/
 outdir/
 text/__pycache__/
 filelists/
+gen_data*
