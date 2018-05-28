@@ -1,3 +1,6 @@
+## NOTE
+This is a forked version of NVIDIA's tacotron2 repository, which I changed to work on NVIDIA K80 GPUs, instead of the V100 GPUs, used originally by them. 
+
 # Tacotron 2 (using Griffin Lim, not Wavenet)
 
 Tacotron 2 PyTorch implementation of [Natural TTS Synthesis By Conditioning
