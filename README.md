@@ -43,13 +43,14 @@ with messages similar to the following, before it starts training correctly:
 2. Open inference.ipynb
 3. Follow instructions on notebook and run
 
-Results from inference after 10k steps:
+## Inference results
+Below are the inference results after 15750, and 4750 steps respectively, for the input text: "You stay in Wonderland and I show you how deep the rabbit hole goes." - Morpheus, The Matrix
 
-Input text: "You stay in Wonderland and I show you how deep the rabbit hole goes." - Morpheus, The Matrix
+![Predicted Mel Spectrogram, Alignment](inference_test_15750.png)
 
-![Predicted Mel Spectrogram, Alignment](inference_test.png)
+![Predicted Mel Spectrogram, Alignment](inference_test_4750.png)
 
-You can download 'inference_test.wav' and listen to the audio.
+You can download 'inference_test_15750.wav' and 'inference_test_4750.wav', to listen to the respective audio generated. Around step 4750, is when the network started to construct a proper alignment graph and make understandable sounds.
 
 ## Related repos
 [nv-wavenet](https://github.com/NVIDIA/nv-wavenet/): Faster than real-time
